@@ -1,31 +1,18 @@
 package com.redlimerl.sleepbackground.config;
 
-import com.google.gson.JsonObject;
-import org.jetbrains.annotations.Nullable;
+import org.mcsr.speedrunapi.config.api.annotations.Config;
 
+@SuppressWarnings({"FieldMayBeFinal", "FieldCanBeLocal"})
 public class LogIntervalConfigValue extends ConfigValue {
 
+    @Config.Numbers.Whole.Bounds(min = 50, max = 500)
     private int logInterval;
 
-    public LogIntervalConfigValue(int defaultLimit, String comment) {
-        super("log_interval", comment);
-        this.logInterval = defaultLimit;
+    public LogIntervalConfigValue(int defaultLogInterval) {
+        this.logInterval = defaultLogInterval;
     }
 
-    @Override
-    public void loadToInit(JsonObject configObject) {
-        if (configObject.has(this.getKeyName())) {
-            this.logInterval = configObject.get(this.getKeyName()).getAsInt();
-            if (this.logInterval < 50 || this.logInterval > 500) throw new IllegalArgumentException("Logging interval must be >= 50ms and <= 500ms");
-        }
-    }
-
-    @Override
-    public void writeToJson(JsonObject configObject) {
-        configObject.addProperty(this.getKeyName(), this.logInterval);
-    }
-
-    public int getLogInterval() {
-        return this.isEnable() ? logInterval : 500;
+    public Integer getLogInterval() {
+        return this.isEnabled() ? this.logInterval : null;
     }
 }

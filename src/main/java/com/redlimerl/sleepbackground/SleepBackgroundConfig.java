@@ -1,63 +1,44 @@
 package com.redlimerl.sleepbackground;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import com.redlimerl.sleepbackground.config.ConfigValue;
-import com.redlimerl.sleepbackground.config.ConfigValues;
-import net.fabricmc.loader.api.FabricLoader;
-import org.apache.commons.io.FileUtils;
+import com.redlimerl.sleepbackground.config.*;
+import org.mcsr.speedrunapi.config.api.SpeedrunConfig;
+import org.mcsr.speedrunapi.config.api.annotations.Config;
+import org.mcsr.speedrunapi.config.api.annotations.InitializeOn;
+import org.mcsr.speedrunapi.config.api.annotations.NoConfig;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
+@InitializeOn(InitializeOn.InitPoint.PRELAUNCH)
+public class SleepBackgroundConfig implements SpeedrunConfig {
 
-import static com.redlimerl.sleepbackground.SleepBackground.LOGGER;
+    @NoConfig
+    public static SleepBackgroundConfig INSTANCE;
 
-public class SleepBackgroundConfig {
+    @Config.Category("backgroundFrameRate")
+    public final FrameLimitConfigValue BACKGROUND_FRAME_RATE = new FrameLimitConfigValue(1);
 
-    private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
+    @Config.Category("loadingScreenFrameRate")
+    public final LoadingScreenFrameLimitConfigValue LOADING_SCREEN_FRAME_RATE = new LoadingScreenFrameLimitConfigValue(30);
 
-    public static void init() {
-        File configFile = FabricLoader.getInstance().getConfigDir().resolve("sleepbg.json").toFile();
+    @Config.Category("worldSetupFrameRate")
+    public final WorldSetupConfigValue WORLD_SETUP_FRAME_RATE = new WorldSetupConfigValue(10, 30);
 
-        if (configFile.exists()) {
-            try {
-                JsonObject jsonObject = new JsonParser().parse(FileUtils.readFileToString(configFile, StandardCharsets.UTF_8)).getAsJsonObject();
-                for (ConfigValue configValue : ConfigValues.ALL_CONFIGS) {
-                    try {
-                        configValue.load(jsonObject);
-                    } catch (Throwable e2) {
-                        e2.printStackTrace();
-                        LOGGER.error("Failed to load '"+configValue.getKeyName()+"'");
-                    }
-                }
-            } catch (Throwable e1) {
-                e1.printStackTrace();
-                LOGGER.error("Failed to read config file");
-            }
-        }
+    @Config.Category("lockedFrameRate")
+    public final LockedInstanceConfigValue LOCKED_INSTANCE_FRAME_RATE = new LockedInstanceConfigValue(1, 20, 10);
 
-        JsonObject writeObject = new JsonObject();
-        for (ConfigValue configValue : ConfigValues.ALL_CONFIGS) {
-            try {
-                configValue.writeToJsonObject(writeObject);
-            } catch (Throwable e2) {
-                e2.printStackTrace();
-                LOGGER.error("Failed to write '"+configValue.getKeyName()+"'");
-            }
-        }
+    @Config.Category("loadingScreenTickInterval")
+    public final LoadingScreenTickConfigValue LOADING_SCREEN_TICK_INTERVAL = new LoadingScreenTickConfigValue(1);
 
-        LOGGER.info("FPS limit in the background has been initalized.");
-        LOGGER.info("> Config data");
-        LOGGER.info(GSON.toJson(writeObject));
+    @Config.Category("worldPreviewRenderInterval")
+    public final WorldPreviewRenderIntervalConfigValue WORLD_PREVIEW_RENDER_INTERVAL = new WorldPreviewRenderIntervalConfigValue(5);
 
-        try {
-            FileUtils.writeStringToFile(configFile, GSON.toJson(writeObject), StandardCharsets.UTF_8);
-        } catch (IOException e) {
-            e.printStackTrace();
-            LOGGER.error("Failed to write config file");
-        }
+    @Config.Category("logInterval")
+    public final LogIntervalConfigValue LOG_INTERVAL = new LogIntervalConfigValue(500);
+
+    {
+        INSTANCE = this;
+    }
+
+    @Override
+    public String modID() {
+        return "sleepbackground";
     }
 }

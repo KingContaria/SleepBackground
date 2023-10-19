@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class MixinGameRenderer {
 
     @Inject(method = "render", at = @At("HEAD"), cancellable = true)
-    private void onRender(float tickDelta, long startTime, boolean tick, CallbackInfo callbackInfo) {
+    private void cancelRender(CallbackInfo callbackInfo) {
         if (SleepBackground.LATEST_LOCK_FRAME) {
             callbackInfo.cancel();
         }

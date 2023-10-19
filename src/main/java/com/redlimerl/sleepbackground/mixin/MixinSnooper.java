@@ -13,7 +13,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class MixinSnooper {
 
     @Inject(method = "update", at = @At("HEAD"), cancellable = true)
-    private void onUpdate(CallbackInfo ci) {
+    private void cancelUpdate(CallbackInfo ci) {
         if (SleepBackground.LATEST_LOCK_FRAME) ci.cancel();
     }
 }

@@ -1,7 +1,7 @@
 package com.redlimerl.sleepbackground.mixin;
 
 import com.redlimerl.sleepbackground.SleepBackground;
-import com.redlimerl.sleepbackground.config.ConfigValues;
+import com.redlimerl.sleepbackground.SleepBackgroundConfig;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.world.ClientWorld;
 import org.jetbrains.annotations.Nullable;
@@ -18,26 +18,27 @@ public class MixinMinecraftClient {
     @Shadow @Nullable public ClientWorld world;
 
     @Inject(method = "render", at = @At("HEAD"))
-    private void onRender(CallbackInfo ci) {
+    private void updateLatestLockFrame(CallbackInfo ci) {
         SleepBackground.LATEST_LOCK_FRAME = !SleepBackground.shouldRenderInBackground();
     }
 
     @Inject(method = "tick", at = @At("RETURN"))
-    private void onTick(CallbackInfo ci) {
+    private void updateClientWorldTickCount(CallbackInfo ci) {
         SleepBackground.CLIENT_WORLD_TICK_COUNT = this.world == null ? 0 :
-                Math.min(SleepBackground.CLIENT_WORLD_TICK_COUNT + 1, ConfigValues.WORLD_INITIAL_FRAME_RATE.getMaxTicks());
+                Math.min(SleepBackground.CLIENT_WORLD_TICK_COUNT + 1, SleepBackgroundConfig.INSTANCE.WORLD_SETUP_FRAME_RATE.getMaxTicks());
 
         SleepBackground.checkLock();
     }
 
 
     @Inject(method = "drawProfilerResults", at = @At("HEAD"), cancellable = true, expect = 0, require = 0)
-    private void onDraw(CallbackInfo ci) {
+    private void cancelDrawProfilerResults(CallbackInfo ci) {
         if (SleepBackground.LATEST_LOCK_FRAME) ci.cancel();
     }
 
     @ModifyArg(method = "startIntegratedServer(Ljava/lang/String;Lnet/minecraft/util/registry/RegistryTracker$Modifiable;Ljava/util/function/Function;Lcom/mojang/datafixers/util/Function4;ZLnet/minecraft/client/MinecraftClient$WorldLoadAction;)V", at = @At(value = "INVOKE", target = "Ljava/lang/Thread;sleep(J)V"))
-    public long onSleep(long l){
-        return ConfigValues.LOADING_TICK_INTERVAL.getTickInterval();
+    private long modifyLoadingScreenTickInterval(long delay) {
+        Integer tickInterval = SleepBackgroundConfig.INSTANCE.LOADING_SCREEN_TICK_INTERVAL.getTickInterval();
+        return tickInterval != null ? tickInterval : delay;
     }
 }

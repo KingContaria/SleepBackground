@@ -14,11 +14,17 @@
       "com.redlimerl.sleepbackground.SleepBackground"
     ]
   },
+  "custom": {
+    "speedrunapi": {
+      "config": "com.redlimerl.sleepbackground.SleepBackgroundConfig"
+    }
+  },
   "mixins": [
     "sleepbackground.mixins.json"
   ],
   "depends": {
-    "minecraft": ">=1.16- <=1.18.2"
+    "minecraft": ">=1.16- <=1.18.2",
+    "speedrunapi": "*"
   },
   "breaks": {
     "dynamicmenufps": "*"

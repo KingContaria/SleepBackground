@@ -10,24 +10,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(Framebuffer.class)
 public class MixinFramebuffer {
 
-    @Inject(method = "beginWrite", at = @At("HEAD"), cancellable = true)
-    private void onBegin(CallbackInfo ci) {
-        if (SleepBackground.LATEST_LOCK_FRAME) {
-            ci.cancel();
-        }
-    }
-
-    @Inject(method = "endWrite", at = @At("HEAD"), cancellable = true)
-    private void onEnd(CallbackInfo ci) {
-        if (SleepBackground.LATEST_LOCK_FRAME) {
-            ci.cancel();
-        }
-    }
-
-    @Inject(method = "draw(II)V", at = @At("HEAD"), cancellable = true)
-    private void onDraw(CallbackInfo ci) {
-        if (SleepBackground.LATEST_LOCK_FRAME) {
-            ci.cancel();
-        }
+    @Inject(method = {"beginWrite", "endWrite", "draw(II)V"}, at = @At("HEAD"), cancellable = true)
+    private void cancelFrameBuffer(CallbackInfo ci) {
+        if (SleepBackground.LATEST_LOCK_FRAME) ci.cancel();
     }
 }

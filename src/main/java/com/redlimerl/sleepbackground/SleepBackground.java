@@ -1,6 +1,5 @@
 package com.redlimerl.sleepbackground;
 
-import com.redlimerl.sleepbackground.config.ConfigValues;
 import me.voidxwalker.worldpreview.WorldPreview;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.loader.api.FabricLoader;
@@ -9,8 +8,6 @@ import net.minecraft.client.gui.screen.LevelLoadingScreen;
 import net.minecraft.client.util.Window;
 import net.minecraft.util.Util;
 import org.apache.commons.io.FileUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 
@@ -19,8 +16,6 @@ import java.util.concurrent.locks.LockSupport;
 
 public class SleepBackground implements ClientModInitializer {
 
-    public static final Logger LOGGER = LogManager.getLogger();
-
     public static int CLIENT_WORLD_TICK_COUNT = 0;
     private static boolean HAS_WORLD_PREVIEW = false;
     private static boolean CHECK_FREEZE_PREVIEW = false;
@@ -28,14 +23,11 @@ public class SleepBackground implements ClientModInitializer {
     public static boolean LATEST_LOCK_FRAME = false;
     public static boolean LOCK_FILE_EXIST = false;
     private static int LOADING_SCREEN_RENDER_COUNT = 0;
+    private static final File LOCK_FILE = new File(FileUtils.getUserDirectory(), "sleepbg.lock");
 
     @Override
     public void onInitializeClient() {
-        SleepBackgroundConfig.init();
-
-        if (FabricLoader.getInstance().getModContainer("worldpreview").isPresent()) {
-            HAS_WORLD_PREVIEW = true;
-        }
+        HAS_WORLD_PREVIEW = FabricLoader.getInstance().isModLoaded("worldpreview");
     }
 
     private static long lastRenderTime = 0;
@@ -71,26 +63,21 @@ public class SleepBackground implements ClientModInitializer {
         MinecraftClient client = MinecraftClient.getInstance();
 
         if (!client.isWindowFocused() && !isHoveredWindow()) {
-
             if (client.world != null) {
                 if (SleepBackground.LOCK_FILE_EXIST) {
-                    Integer value = ConfigValues.NONE_PLAYING_FRAME_RATE.getFrameLimit();
+                    Integer value = SleepBackgroundConfig.INSTANCE.LOCKED_INSTANCE_FRAME_RATE.getFrameLimit();
                     if (value != null) return value;
                 }
 
-                if (ConfigValues.WORLD_INITIAL_FRAME_RATE.getMaxTicks() > CLIENT_WORLD_TICK_COUNT) {
-                    Integer value = ConfigValues.WORLD_INITIAL_FRAME_RATE.getFrameLimit();
+                if (SleepBackgroundConfig.INSTANCE.WORLD_SETUP_FRAME_RATE.getMaxTicks() > CLIENT_WORLD_TICK_COUNT) {
+                    Integer value = SleepBackgroundConfig.INSTANCE.WORLD_SETUP_FRAME_RATE.getFrameLimit();
                     if (value != null) return value;
                 }
 
-                return ConfigValues.BACKGROUND_FRAME_RATE.getFrameLimit();
+                return SleepBackgroundConfig.INSTANCE.BACKGROUND_FRAME_RATE.getFrameLimit();
+            } else if (client.currentScreen instanceof LevelLoadingScreen) {
+                return SleepBackgroundConfig.INSTANCE.LOADING_SCREEN_FRAME_RATE.getFrameLimit();
             }
-
-            else if (client.currentScreen instanceof LevelLoadingScreen) {
-                return ConfigValues.LOADING_SCREEN_FRAME_RATE.getFrameLimit();
-            }
-
-            return null;
         }
         return null;
     }
@@ -110,7 +97,7 @@ public class SleepBackground implements ClientModInitializer {
             checkLock();
         }
         boolean windowFocused = MinecraftClient.getInstance().isWindowFocused(), windowHovered = isHoveredWindow();
-        int renderTimes = SleepBackground.LOCK_FILE_EXIST ? ConfigValues.NONE_PLAYING_FRAME_RATE.getRenderTimes() : ConfigValues.WORLD_PREVIEW_RENDER_TIMES.getRenderTimes();
+        int renderTimes = SleepBackground.LOCK_FILE_EXIST ? SleepBackgroundConfig.INSTANCE.LOCKED_INSTANCE_FRAME_RATE.getWorldPreviewRenderInterval() : SleepBackgroundConfig.INSTANCE.WORLD_PREVIEW_RENDER_INTERVAL.getRenderInterval();
         if (windowFocused || windowHovered
                 || ++LOADING_SCREEN_RENDER_COUNT >= renderTimes) {
             LOADING_SCREEN_RENDER_COUNT = 0;
@@ -129,9 +116,13 @@ public class SleepBackground implements ClientModInitializer {
 
     private static int lockTick = 0;
     public static void checkLock() {
-        if (ConfigValues.NONE_PLAYING_FRAME_RATE.isEnable() && ++lockTick >= ConfigValues.NONE_PLAYING_FRAME_RATE.getTickInterval()) {
-            SleepBackground.LOCK_FILE_EXIST = new File(FileUtils.getUserDirectory(), "sleepbg.lock").exists();
-            lockTick = 0;
+        if (SleepBackgroundConfig.INSTANCE.LOCKED_INSTANCE_FRAME_RATE.isEnabled()) {
+            if (++lockTick >= SleepBackgroundConfig.INSTANCE.LOCKED_INSTANCE_FRAME_RATE.getTickInterval()) {
+                SleepBackground.LOCK_FILE_EXIST = LOCK_FILE.exists();
+                lockTick = 0;
+            }
+        } else {
+            SleepBackground.LOCK_FILE_EXIST = false;
         }
     }
 }

@@ -12,28 +12,13 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(RenderSystem.class)
 public class MixinRenderSystem {
 
-    @Inject(method = "clear", at = @At("HEAD"), cancellable = true)
-    private static void onClear(CallbackInfo ci) {
+    @Inject(method = {"clear", "enableCull", "enableTexture"}, at = @At("HEAD"), cancellable = true)
+    private static void cancelRenderSystem(CallbackInfo ci) {
         if (SleepBackground.LATEST_LOCK_FRAME) ci.cancel();
     }
 
-    @Inject(method = "enableCull", at = @At("HEAD"), cancellable = true)
-    private static void onCull(CallbackInfo ci) {
-        if (SleepBackground.LATEST_LOCK_FRAME) ci.cancel();
-    }
-
-    @Inject(method = "enableTexture", at = @At("HEAD"), cancellable = true)
-    private static void onTexture(CallbackInfo ci) {
-        if (SleepBackground.LATEST_LOCK_FRAME) ci.cancel();
-    }
-
-    @Inject(method = "fogDensity", at = @At("HEAD"), cancellable = true, expect = 0, require = 0)
-    private static void onFogDensity(CallbackInfo ci) {
-        if (SleepBackground.LATEST_LOCK_FRAME) ci.cancel();
-    }
-
-    @Inject(method = "fogMode(Lcom/mojang/blaze3d/platform/GlStateManager$FogMode;)V", at = @At("HEAD"), cancellable = true, expect = 0, require = 0)
-    private static void onFogMode(CallbackInfo ci) {
+    @Inject(method = {"fogDensity", "fogMode(Lcom/mojang/blaze3d/platform/GlStateManager$FogMode;)V"}, at = @At("HEAD"), cancellable = true, expect = 0, require = 0)
+    private static void cancelRenderSystem_notRequired(CallbackInfo ci) {
         if (SleepBackground.LATEST_LOCK_FRAME) ci.cancel();
     }
 }
