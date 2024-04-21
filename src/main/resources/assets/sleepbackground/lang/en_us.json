@@ -8,29 +8,33 @@
   "speedrunapi.config.sleepbackground.category.lockedFrameRate": "Locked Frame Rate",
   "speedrunapi.config.sleepbackground.category.lockedWorldPreviewRenderInterval": "Locked WorldPreview Render Interval",
   "speedrunapi.config.sleepbackground.category.loadingScreenTickInterval": "Loading Screen Tick Interval",
-  "speedrunapi.config.sleepbackground.category.worldPreviewRenderInterval": "WorldPreview Render Interval",
   "speedrunapi.config.sleepbackground.category.logInterval": "Worldgen Progress Log Interval",
 
   "speedrunapi.config.sleepbackground.option.BACKGROUND_FRAME_RATE:frameLimit.description": "FPS Limit when the Minecraft window is unfocused after the world has loaded in.",
+  "speedrunapi.config.sleepbackground.option.BACKGROUND_FRAME_RATE:frameLimit.value": "%s fps",
 
   "speedrunapi.config.sleepbackground.option.LOADING_SCREEN_FRAME_RATE:frameLimit.description": "FPS Limit when the Minecraft window is unfocused in the world loading screen.",
+  "speedrunapi.config.sleepbackground.option.LOADING_SCREEN_FRAME_RATE:frameLimit.value": "%s fps",
 
   "speedrunapi.config.sleepbackground.option.WORLD_SETUP_FRAME_RATE:frameLimit.description": "FPS Limit when the Minecraft window is unfocused while the world is being set up.",
+  "speedrunapi.config.sleepbackground.option.WORLD_SETUP_FRAME_RATE:frameLimit.value": "%s fps",
   "speedrunapi.config.sleepbackground.option.WORLD_SETUP_FRAME_RATE:maxTicks": "Max Setup Ticks",
   "speedrunapi.config.sleepbackground.option.WORLD_SETUP_FRAME_RATE:maxTicks.description": "The amount of ticks the FPS Limit stays in world setup mode after joining the world.",
+  "speedrunapi.config.sleepbackground.option.WORLD_SETUP_FRAME_RATE:maxTicks.value": "%s ticks",
+  "speedrunapi.config.sleepbackground.option.WORLD_SETUP_FRAME_RATE:maxTicks.value.1": "1 tick",
 
   "speedrunapi.config.sleepbackground.option.LOCKED_INSTANCE_FRAME_RATE:frameLimit.description": "FPS Limit when the Minecraft window is unfocused and a SleepBackground lock is active.\nSleepBackground can be locked by macros by creating a \"sleepbg.lock\" file in the user directory.",
-  "speedrunapi.config.sleepbackground.option.LOCKED_INSTANCE_FRAME_RATE:tickInterval": "Lock Tick Interval",
+  "speedrunapi.config.sleepbackground.option.LOCKED_INSTANCE_FRAME_RATE:frameLimit.value": "%s fps",
+  "speedrunapi.config.sleepbackground.option.LOCKED_INSTANCE_FRAME_RATE:tickInterval": "Lock Update Interval",
   "speedrunapi.config.sleepbackground.option.LOCKED_INSTANCE_FRAME_RATE:tickInterval.description": "Interval of ticks at which SleepBackground checks if there is an active lock.",
-  "speedrunapi.config.sleepbackground.option.LOCKED_INSTANCE_FRAME_RATE:locked_worldPreviewRenderInterval:renderInterval": "Render Interval",
-  "speedrunapi.config.sleepbackground.option.LOCKED_INSTANCE_FRAME_RATE:locked_worldPreviewRenderInterval:renderInterval.description": "Changes how often the world preview gets rendered while a SleepBackground lock is active, relative to every time the loading screen is rendered.\nPreview will be rendered every x frames.",
+  "speedrunapi.config.sleepbackground.option.LOCKED_INSTANCE_FRAME_RATE:tickInterval.value": "%s ticks",
+  "speedrunapi.config.sleepbackground.option.LOCKED_INSTANCE_FRAME_RATE:tickInterval.value.1": "1 tick",
 
   "speedrunapi.config.sleepbackground.option.LOADING_SCREEN_TICK_INTERVAL:tickInterval": "Tick Interval",
   "speedrunapi.config.sleepbackground.option.LOADING_SCREEN_TICK_INTERVAL:tickInterval.description": "Changes how often the game ticks on the loading screen/preview, decreasing this number will reduce reset input latency.",
-
-  "speedrunapi.config.sleepbackground.option.WORLD_PREVIEW_RENDER_INTERVAL:renderInterval": "Render Interval",
-  "speedrunapi.config.sleepbackground.option.WORLD_PREVIEW_RENDER_INTERVAL:renderInterval.description": "Changes how often the world preview gets rendered, relative to every time the loading screen is rendered.\nPreview will be rendered every x frames.",
+  "speedrunapi.config.sleepbackground.option.LOADING_SCREEN_TICK_INTERVAL:tickInterval.value": "%sms",
 
   "speedrunapi.config.sleepbackground.option.LOG_INTERVAL:logInterval": "Log Interval",
-  "speedrunapi.config.sleepbackground.option.LOG_INTERVAL:logInterval.description": "Changes how often the game prints the worldgen progress to the log file, may be useful for macros."
+  "speedrunapi.config.sleepbackground.option.LOG_INTERVAL:logInterval.description": "Changes how often the game prints the worldgen progress to the log file, may be useful for macros.",
+  "speedrunapi.config.sleepbackground.option.LOG_INTERVAL:logInterval.value": "%sms"
 }
