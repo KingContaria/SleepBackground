@@ -16,9 +16,6 @@ dependencies {
     mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
     modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
-    // WorldPreview
-    compileOnlyApi files('libs/worldpreview-2.3.3+1.16.1.jar')
-
     // SpeedrunAPI
     // check for the latest versions at https://jitpack.io/#kingcontaria/speedrunapi
     modImplementation "com.github.KingContaria:SpeedrunAPI:b25af3eafb"
