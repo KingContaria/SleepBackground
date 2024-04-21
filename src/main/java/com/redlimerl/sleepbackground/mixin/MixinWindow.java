@@ -11,11 +11,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(Window.class)
 public class MixinWindow {
 
-    @Inject(method = "swapBuffers", cancellable = true, at = @At("HEAD"))
+    @Inject(method = "swapBuffers", at = @At("HEAD"), cancellable = true)
     private void cancelSwapBuffers(CallbackInfo ci) {
-        if (SleepBackground.LATEST_LOCK_FRAME) {
-            ci.cancel();
+        if (SleepBackground.shouldNotRender) {
             GLFW.glfwPollEvents();
+            ci.cancel();
         }
     }
 }

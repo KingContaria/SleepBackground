@@ -12,8 +12,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(ToastManager.class)
 public class MixinToastManager {
 
-    @Inject(method = "draw", at = @At("HEAD"), cancellable = true, expect = 0, require = 0)
+    @Inject(method = "draw", at = @At("HEAD"), cancellable = true, require = 0)
     private void cancelDraw(CallbackInfo ci) {
-        if (SleepBackground.LATEST_LOCK_FRAME) ci.cancel();
+        if (SleepBackground.shouldNotRender) ci.cancel();
     }
 }

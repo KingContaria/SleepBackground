@@ -9,11 +9,6 @@
   ],
   "license": "MIT",
   "environment": "client",
-  "entrypoints": {
-    "client": [
-      "com.redlimerl.sleepbackground.SleepBackground"
-    ]
-  },
   "custom": {
     "speedrunapi": {
       "config": "com.redlimerl.sleepbackground.SleepBackgroundConfig"

@@ -12,6 +12,6 @@ public class MixinFramebuffer {
 
     @Inject(method = {"beginWrite", "endWrite", "draw(II)V"}, at = @At("HEAD"), cancellable = true)
     private void cancelFrameBuffer(CallbackInfo ci) {
-        if (SleepBackground.LATEST_LOCK_FRAME) ci.cancel();
+        if (SleepBackground.shouldNotRender) ci.cancel();
     }
 }
