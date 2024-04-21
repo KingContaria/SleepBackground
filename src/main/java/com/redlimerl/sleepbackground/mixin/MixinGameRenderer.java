@@ -15,6 +15,5 @@ public class MixinGameRenderer {
         if (SleepBackground.LATEST_LOCK_FRAME) {
             callbackInfo.cancel();
         }
-        SleepBackground.checkRenderWorldPreview();
     }
 }

@@ -1,11 +1,7 @@
 package com.redlimerl.sleepbackground;
 
-import me.voidxwalker.worldpreview.WorldPreview;
-import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.LevelLoadingScreen;
-import net.minecraft.client.util.Window;
 import net.minecraft.util.Util;
 import org.apache.commons.io.FileUtils;
 import org.jetbrains.annotations.Nullable;
@@ -14,25 +10,16 @@ import org.lwjgl.glfw.GLFW;
 import java.io.File;
 import java.util.concurrent.locks.LockSupport;
 
-public class SleepBackground implements ClientModInitializer {
+public class SleepBackground {
 
     public static SleepBackgroundConfig config;
 
     public static int CLIENT_WORLD_TICK_COUNT = 0;
-    private static boolean HAS_WORLD_PREVIEW = false;
-    private static boolean CHECK_FREEZE_PREVIEW = false;
-    private static boolean LOCK_FREEZE_PREVIEW = false;
     public static boolean LATEST_LOCK_FRAME = false;
     public static boolean LOCK_FILE_EXIST = false;
-    private static int LOADING_SCREEN_RENDER_COUNT = 0;
     private static final File LOCK_FILE = new File(FileUtils.getUserDirectory(), "sleepbg.lock");
+    private static long lastRenderTime;
 
-    @Override
-    public void onInitializeClient() {
-        HAS_WORLD_PREVIEW = FabricLoader.getInstance().isModLoaded("worldpreview");
-    }
-
-    private static long lastRenderTime = 0;
     public static boolean shouldRenderInBackground() {
         long currentTime = Util.getMeasuringTimeMs();
         long timeSinceLastRender = currentTime - lastRenderTime;
@@ -85,35 +72,7 @@ public class SleepBackground implements ClientModInitializer {
     }
 
     private static boolean isHoveredWindow() {
-        Window window = MinecraftClient.getInstance().getWindow();
-        return GLFW.glfwGetWindowAttrib(window.getHandle(), 131083) != 0;
-    }
-
-    private static long checkTickRate = 0;
-    public static void checkRenderWorldPreview() {
-        if (!HAS_WORLD_PREVIEW || !WorldPreview.inPreview) return;
-
-        long currentTime = System.currentTimeMillis();
-        if (currentTime > checkTickRate + 50) {
-            checkTickRate = currentTime;
-            checkLock();
-        }
-        boolean windowFocused = MinecraftClient.getInstance().isWindowFocused(), windowHovered = isHoveredWindow();
-        int renderTimes = SleepBackground.LOCK_FILE_EXIST ? SleepBackground.config.LOCKED_INSTANCE_FRAME_RATE.getWorldPreviewRenderInterval() : SleepBackground.config.WORLD_PREVIEW_RENDER_INTERVAL.getRenderInterval();
-        if (windowFocused || windowHovered
-                || ++LOADING_SCREEN_RENDER_COUNT >= renderTimes) {
-            LOADING_SCREEN_RENDER_COUNT = 0;
-            if (windowFocused || windowHovered) {
-                if (CHECK_FREEZE_PREVIEW) {
-                    LOCK_FREEZE_PREVIEW = WorldPreview.freezePreview;
-                }
-                CHECK_FREEZE_PREVIEW = true;
-            }
-            WorldPreview.freezePreview = LOCK_FREEZE_PREVIEW;
-        } else {
-            CHECK_FREEZE_PREVIEW = false;
-            WorldPreview.freezePreview = true;
-        }
+        return GLFW.glfwGetWindowAttrib(MinecraftClient.getInstance().getWindow().getHandle(), 131083) != 0;
     }
 
     private static int lockTick = 0;
