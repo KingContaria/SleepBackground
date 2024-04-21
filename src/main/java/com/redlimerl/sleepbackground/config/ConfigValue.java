@@ -7,7 +7,6 @@ import org.mcsr.speedrunapi.config.api.annotations.Config;
 public abstract class ConfigValue implements SpeedrunConfigStorage {
 
     @Config.Name("sleepbackground.config.enable")
-    @Config.Description.None
     private boolean enabled = true;
 
     public final boolean isEnabled() {
