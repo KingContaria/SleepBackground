@@ -16,6 +16,8 @@ import java.util.concurrent.locks.LockSupport;
 
 public class SleepBackground implements ClientModInitializer {
 
+    public static SleepBackgroundConfig config;
+
     public static int CLIENT_WORLD_TICK_COUNT = 0;
     private static boolean HAS_WORLD_PREVIEW = false;
     private static boolean CHECK_FREEZE_PREVIEW = false;
@@ -65,18 +67,18 @@ public class SleepBackground implements ClientModInitializer {
         if (!client.isWindowFocused() && !isHoveredWindow()) {
             if (client.world != null) {
                 if (SleepBackground.LOCK_FILE_EXIST) {
-                    Integer value = SleepBackgroundConfig.INSTANCE.LOCKED_INSTANCE_FRAME_RATE.getFrameLimit();
+                    Integer value = SleepBackground.config.LOCKED_INSTANCE_FRAME_RATE.getFrameLimit();
                     if (value != null) return value;
                 }
 
-                if (SleepBackgroundConfig.INSTANCE.WORLD_SETUP_FRAME_RATE.getMaxTicks() > CLIENT_WORLD_TICK_COUNT) {
-                    Integer value = SleepBackgroundConfig.INSTANCE.WORLD_SETUP_FRAME_RATE.getFrameLimit();
+                if (SleepBackground.config.WORLD_SETUP_FRAME_RATE.getMaxTicks() > CLIENT_WORLD_TICK_COUNT) {
+                    Integer value = SleepBackground.config.WORLD_SETUP_FRAME_RATE.getFrameLimit();
                     if (value != null) return value;
                 }
 
-                return SleepBackgroundConfig.INSTANCE.BACKGROUND_FRAME_RATE.getFrameLimit();
+                return SleepBackground.config.BACKGROUND_FRAME_RATE.getFrameLimit();
             } else if (client.currentScreen instanceof LevelLoadingScreen) {
-                return SleepBackgroundConfig.INSTANCE.LOADING_SCREEN_FRAME_RATE.getFrameLimit();
+                return SleepBackground.config.LOADING_SCREEN_FRAME_RATE.getFrameLimit();
             }
         }
         return null;
@@ -97,7 +99,7 @@ public class SleepBackground implements ClientModInitializer {
             checkLock();
         }
         boolean windowFocused = MinecraftClient.getInstance().isWindowFocused(), windowHovered = isHoveredWindow();
-        int renderTimes = SleepBackground.LOCK_FILE_EXIST ? SleepBackgroundConfig.INSTANCE.LOCKED_INSTANCE_FRAME_RATE.getWorldPreviewRenderInterval() : SleepBackgroundConfig.INSTANCE.WORLD_PREVIEW_RENDER_INTERVAL.getRenderInterval();
+        int renderTimes = SleepBackground.LOCK_FILE_EXIST ? SleepBackground.config.LOCKED_INSTANCE_FRAME_RATE.getWorldPreviewRenderInterval() : SleepBackground.config.WORLD_PREVIEW_RENDER_INTERVAL.getRenderInterval();
         if (windowFocused || windowHovered
                 || ++LOADING_SCREEN_RENDER_COUNT >= renderTimes) {
             LOADING_SCREEN_RENDER_COUNT = 0;
@@ -116,8 +118,8 @@ public class SleepBackground implements ClientModInitializer {
 
     private static int lockTick = 0;
     public static void checkLock() {
-        if (SleepBackgroundConfig.INSTANCE.LOCKED_INSTANCE_FRAME_RATE.isEnabled()) {
-            if (++lockTick >= SleepBackgroundConfig.INSTANCE.LOCKED_INSTANCE_FRAME_RATE.getTickInterval()) {
+        if (SleepBackground.config.LOCKED_INSTANCE_FRAME_RATE.isEnabled()) {
+            if (++lockTick >= SleepBackground.config.LOCKED_INSTANCE_FRAME_RATE.getTickInterval()) {
                 SleepBackground.LOCK_FILE_EXIST = LOCK_FILE.exists();
                 lockTick = 0;
             }

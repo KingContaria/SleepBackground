@@ -1,7 +1,6 @@
 package com.redlimerl.sleepbackground.mixin;
 
 import com.redlimerl.sleepbackground.SleepBackground;
-import com.redlimerl.sleepbackground.SleepBackgroundConfig;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.world.ClientWorld;
 import org.jetbrains.annotations.Nullable;
@@ -25,7 +24,7 @@ public class MixinMinecraftClient {
     @Inject(method = "tick", at = @At("RETURN"))
     private void updateClientWorldTickCount(CallbackInfo ci) {
         SleepBackground.CLIENT_WORLD_TICK_COUNT = this.world == null ? 0 :
-                Math.min(SleepBackground.CLIENT_WORLD_TICK_COUNT + 1, SleepBackgroundConfig.INSTANCE.WORLD_SETUP_FRAME_RATE.getMaxTicks());
+                Math.min(SleepBackground.CLIENT_WORLD_TICK_COUNT + 1, SleepBackground.config.WORLD_SETUP_FRAME_RATE.getMaxTicks());
 
         SleepBackground.checkLock();
     }
@@ -38,7 +37,7 @@ public class MixinMinecraftClient {
 
     @ModifyArg(method = "startIntegratedServer(Ljava/lang/String;Lnet/minecraft/util/registry/RegistryTracker$Modifiable;Ljava/util/function/Function;Lcom/mojang/datafixers/util/Function4;ZLnet/minecraft/client/MinecraftClient$WorldLoadAction;)V", at = @At(value = "INVOKE", target = "Ljava/lang/Thread;sleep(J)V"))
     private long modifyLoadingScreenTickInterval(long delay) {
-        Integer tickInterval = SleepBackgroundConfig.INSTANCE.LOADING_SCREEN_TICK_INTERVAL.getTickInterval();
+        Integer tickInterval = SleepBackground.config.LOADING_SCREEN_TICK_INTERVAL.getTickInterval();
         return tickInterval != null ? tickInterval : delay;
     }
 }

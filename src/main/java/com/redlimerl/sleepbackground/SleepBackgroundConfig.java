@@ -4,13 +4,9 @@ import com.redlimerl.sleepbackground.config.*;
 import org.mcsr.speedrunapi.config.api.SpeedrunConfig;
 import org.mcsr.speedrunapi.config.api.annotations.Config;
 import org.mcsr.speedrunapi.config.api.annotations.InitializeOn;
-import org.mcsr.speedrunapi.config.api.annotations.NoConfig;
 
 @InitializeOn(InitializeOn.InitPoint.PRELAUNCH)
 public class SleepBackgroundConfig implements SpeedrunConfig {
-
-    @NoConfig
-    public static SleepBackgroundConfig INSTANCE;
 
     @Config.Category("backgroundFrameRate")
     public final FrameLimitConfigValue BACKGROUND_FRAME_RATE = new FrameLimitConfigValue(1);
@@ -34,7 +30,7 @@ public class SleepBackgroundConfig implements SpeedrunConfig {
     public final LogIntervalConfigValue LOG_INTERVAL = new LogIntervalConfigValue(500);
 
     {
-        INSTANCE = this;
+        SleepBackground.config = this;
     }
 
     @Override
