@@ -21,7 +21,7 @@ public class SleepBackgroundConfig implements SpeedrunConfig {
     public final LockedInstanceConfigValue LOCKED_INSTANCE_FRAME_RATE = new LockedInstanceConfigValue(1, 20);
 
     @Config.Category("loadingScreenTickInterval")
-    public final LoadingScreenTickConfigValue LOADING_SCREEN_TICK_INTERVAL = new LoadingScreenTickConfigValue(16);
+    public final LoadingScreenTickConfigValue LOADING_SCREEN_TICK_INTERVAL = new LoadingScreenTickConfigValue(1);
 
     @Config.Category("logInterval")
     public final LogIntervalConfigValue LOG_INTERVAL = new LogIntervalConfigValue(500);
