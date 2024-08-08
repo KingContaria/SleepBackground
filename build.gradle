@@ -19,7 +19,6 @@ dependencies {
     // SpeedrunAPI
     // check for the latest versions at https://jitpack.io/#kingcontaria/speedrunapi
     modImplementation "com.github.KingContaria:SpeedrunAPI:b25af3eafb"
-
 }
 
 processResources {
